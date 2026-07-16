@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For her birthday</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2c2418;
+    --cream:#f3ede0;
+    --sand:#e6d9c1;
+    --indigo:#4b3a2a;
+    --indigo-deep:#3a2c1f;
+    --coral:#a06b3a;
+    --coral-deep:#6e4423;
+    --gold:#8a6d3a;
+    --gold-deep:#5e4a22;
+    --teal:#5b7a52;
+    --teal-deep:#3c5636;
+    --pink:#7a6142;
+    --pink-deep:#4f3c26;
+    --line: rgba(44,36,24,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(216,90,48,0.10), transparent 60%),
+      radial-gradient(1000px 700px at 100% 0%, rgba(29,122,99,0.12), transparent 55%),
+      var(--cream);
+    color:var(--ink);
+    font-family:'Jost', sans-serif;
+    min-height:100vh;
+  }
+  .kanga-border{
+    height:10px;
+    width:100%;
+    background: repeating-linear-gradient(90deg,
+      var(--coral) 0px, var(--coral) 18px,
+      var(--gold) 18px, var(--gold) 36px,
+      var(--teal) 36px, var(--teal) 54px,
+      var(--pink) 54px, var(--pink) 72px);
+    opacity:0.85;
+  }
+  header{
+    max-width:900px;
+    margin:0 auto;
+    padding:64px 32px 20px;
+    text-align:center;
+  }
+  .eyebrow{
+    font-family:'Jost',sans-serif;
+    font-size:13px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--coral-deep);
+    font-weight:500;
+    opacity:0;
+    animation: rise 0.7s ease forwards;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:clamp(34px, 6vw, 58px);
+    line-height:1.05;
+    margin:14px 0 12px;
+    color:var(--indigo-deep);
+    opacity:0;
+    animation: rise 0.8s ease 0.12s forwards;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--coral-deep);
+  }
+  .sub{
+    font-size:16px;
+    color:#4a5a58;
+    max-width:520px;
+    margin:0 auto;
+    line-height:1.6;
+    opacity:0;
+    animation: rise 0.8s ease 0.24s forwards;
+  }
+  @keyframes rise{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .controls{
+    max-width:900px;
+    margin:36px auto 8px;
+    padding:0 32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-family:'Jost',sans-serif;
+    font-size:13px;
+    letter-spacing:0.02em;
+    padding:9px 20px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .chip:hover{ border-color: var(--indigo); }
+  .chip.active{
+    background:var(--indigo-deep);
+    border-color:var(--indigo-deep);
+    color:var(--cream);
+  }
+  .chip.active[data-cat="us"]{background:var(--coral-deep); border-color:var(--coral-deep);}
+  .chip.active[data-cat="playful"]{background:var(--gold-deep); border-color:var(--gold-deep);}
+  .chip.active[data-cat="nostalgia"]{background:var(--teal-deep); border-color:var(--teal-deep);}
+
+  .shuffle-row{
+    display:flex; justify-content:center; margin:8px 0 40px;
+  }
+  .shuffle-btn{
+    font-family:'Jost',sans-serif;
+    font-size:13px;
+    background:none;
+    border:none;
+    color:var(--ink);
+    text-decoration:underline;
+    text-underline-offset:4px;
+    cursor:pointer;
+    opacity:0.75;
+  }
+  .shuffle-btn:hover{ opacity:1; }
+
+  .deck{
+    max-width:960px;
+    margin:0 auto;
+    padding:0 32px 100px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:22px;
+  }
+  .card-slot{
+    perspective:1200px;
+    height:190px;
+    opacity:0;
+    transform:translateY(18px) scale(0.97);
+    animation: cardIn 0.55s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  @keyframes cardIn{
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .card-inner{
+    position:relative;
+    width:100%;
+    height:100%;
+    transition:transform 0.6s cubic-bezier(.4,.2,.2,1);
+    transform-style:preserve-3d;
+    cursor:pointer;
+  }
+  .card-slot:hover .card-inner{
+    transform: translateY(-3px);
+  }
+  .card-slot.flipped .card-inner{
+    transform: rotateY(180deg);
+  }
+  .card-slot.flipped:hover .card-inner{
+    transform: rotateY(180deg) translateY(-3px);
+  }
+  .face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:16px;
+    padding:22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow: 0 1px 2px rgba(21,39,56,0.06), 0 8px 20px rgba(21,39,56,0.06);
+  }
+  .face-front{
+    align-items:flex-start;
+  }
+  .face-back{
+    transform:rotateY(180deg);
+    justify-content:center;
+    align-items:flex-start;
+  }
+  .prompt{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:22px;
+    line-height:1.2;
+    margin-top:auto;
+  }
+  .answer{
+    font-family:'Fraunces', serif;
+    font-weight:400;
+    font-style: italic;
+    font-size:17px;
+    line-height:1.5;
+  }
+  .flip-hint{
+    align-self:flex-end;
+    font-size:11px;
+    opacity:0.6;
+    letter-spacing:0.04em;
+  }
+
+  .c-us .face-front{ background:linear-gradient(160deg, #e6d3ba, #f3ede0); border:1px solid rgba(110,68,35,0.2); }
+  .c-us .face-front .prompt{ color:var(--coral-deep); }
+  .c-us .face-back{ background:var(--coral-deep); color:#f3ede0; }
+
+  .c-playful .face-front{ background:linear-gradient(160deg, #ded0ab, #f3ede0); border:1px solid rgba(94,74,34,0.22); }
+  .c-playful .face-front .prompt{ color:var(--gold-deep); }
+  .c-playful .face-back{ background:var(--gold-deep); color:#f3ede0; }
+
+  .c-nostalgia .face-front{ background:linear-gradient(160deg, #cdd9be, #f3ede0); border:1px solid rgba(60,86,54,0.22); }
+  .c-nostalgia .face-front .prompt{ color:var(--teal-deep); }
+  .c-nostalgia .face-back{ background:var(--teal-deep); color:#f3ede0; }
+
+  footer{
+    text-align:center;
+    padding:20px 32px 70px;
+    font-size:13px;
+    color:#6b7674;
+  }
+  footer span{ color:var(--coral-deep); }
+
+  @media (max-width:520px){
+    header{ padding:44px 20px 10px; }
+    .deck{ padding:0 20px 80px; grid-template-columns:1fr; }
+    .card-slot{ height:170px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="kanga-border"></div>
+
+<header>
+  <h1>for my <em>baby</em></h1>
+  <p class="sub">a little deck of us</p>
+</header>
+
+<div class="shuffle-row">
+  <button class="shuffle-btn" id="shuffleBtn">↻ shuffle the deck</button>
+</div>
+
+<div class="deck" id="deck"></div>
+
+<footer>full disclosure — this was made with a little help</footer>
+
+<script>
+const cards = [
+  {cat:"us", front:"abu dhabi", back:"what were we going to do in abu dhabi before the city shut down?"},
+
+  {cat:"playful", front:"this or that", back:"late night phone calls or lazy sunday mornings"},
+  {cat:"playful", front:"this or that", back:"window seat or aisle seat"},
+  {cat:"playful", front:"this or that", back:"cooking together or being cooked for"},
+  {cat:"playful", front:"this or that", back:"taarab or bongo flava"},
+  {cat:"playful", front:"this or that", back:"mahindi ya kuchoma or muhogo wa kukaanga"},
+
+  {cat:"playful", front:"confession", back:"what's something she does that instantly kills an argument you were winning?"},
+  {cat:"playful", front:"confession", back:"what's a nickname for her you'd never say out loud in front of people?"},
+  {cat:"playful", front:"confession", back:"what's a memory of her you replay when you're bored?"},
+  {cat:"playful", front:"confession", back:"what's something you've changed about yourself since being with her?"},
+
+  {cat:"playful", front:"prediction", back:"where do you think you two will be for her next birthday?"},
+
+  {cat:"playful", front:"swap", back:"if you swapped phones for a day, what's the first thing you'd check?"},
+  {cat:"playful", front:"swap", back:"if you swapped bank accounts for a week, who's more scared?"},
+
+  {cat:"nostalgia", front:"msamiati", back:"kicheko cha bwerere — what does it mean?"},
+  {cat:"nostalgia", front:"msamiati", back:"msondo — what does it mean?"},
+  {cat:"nostalgia", front:"msamiati", back:"fyongo — what does it mean?"},
+
+  {cat:"nostalgia", front:"methali", back:"say your favourite methali and what it actually means to you"}
+];
+
+const deckEl = document.getElementById('deck');
+
+function render(list){
+  deckEl.innerHTML = '';
+  list.forEach((c, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot c-' + c.cat;
+    slot.style.animationDelay = (i * 0.05) + 's';
+
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    const front = document.createElement('div');
+    front.className = 'face face-front';
+    front.innerHTML = '<span class="prompt">' + c.front + '</span>';
+
+    const back = document.createElement('div');
+    back.className = 'face face-back';
+    back.innerHTML = '<span class="answer">' + c.back + '</span><span class="flip-hint">tap to flip back</span>';
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    slot.appendChild(inner);
+
+    slot.addEventListener('click', () => {
+      slot.classList.toggle('flipped');
+    });
+
+    deckEl.appendChild(slot);
+  });
+}
+
+document.getElementById('shuffleBtn').addEventListener('click', () => {
+  const list = [...cards];
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  render(list);
+});
+
+render(cards);
+</script>
+
+</body>
+</html>
